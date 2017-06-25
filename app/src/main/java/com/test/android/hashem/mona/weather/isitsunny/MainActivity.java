@@ -3,6 +3,8 @@ package com.test.android.hashem.mona.weather.isitsunny;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -42,11 +45,11 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
     DaysAdapter daysAdapter;
     RequestQueue requestQueue;
     ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         progressBar = (ProgressBar) findViewById(R.id.progressBar2);
         adjustRecyclerView();
@@ -83,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
             startActivity(map);
             return true;
         }
+        else if (id == R.id.action_settings){
+            startActivity(new Intent(MainActivity.this,SettingsDialogActivity.class));
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -117,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
             int lonDeg =sharedPreference.getInt(getResources().getString(R.string.longitude_degree),0);
             int lonMin =sharedPreference.getInt(getResources().getString(R.string.longitude_minute),0);
             int lonSec =sharedPreference.getInt(getResources().getString(R.string.longitude_second),0);
+            final boolean c = sharedPreference.getBoolean("C",true);
 
             double lat = latDeg + (latMin/60.0) + (latSec/3600.0);
             double lon = lonDeg + (lonMin/60.0) + (lonSec/3600.0);
@@ -142,8 +149,15 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
                         for(int i = 0; i < 7; i++) {
                             JSONObject day = list.getJSONObject(i);
                             JSONObject temp = day.getJSONObject("temp");
-                            int min = (int) Math.round(temp.getDouble("min")) - 273;
-                            int max = (int) Math.round(temp.getDouble("max")) - 273;
+                            int min = 0, max = 0;
+                            if(c) {
+                                min = (int) Math.round(temp.getDouble("min")) - 273;
+                                max = (int) Math.round(temp.getDouble("max")) - 273;
+                            }
+                            else {
+                                min = (int) Math.round((temp.getDouble("min") - 273)*1.8 + 32);
+                                max = (int) Math.round((temp.getDouble("max") - 273)*1.8 + 32);
+                            }
                             int pressure = (int) Math.round(day.getDouble("pressure"));
                             int humidity = (int) Math.round(day.getDouble("humidity"));
                             String weatherMain = day.getJSONArray("weather").getJSONObject(0).getString("main");

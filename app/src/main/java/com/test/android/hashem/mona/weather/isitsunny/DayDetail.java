@@ -36,5 +36,6 @@ public class DayDetail extends AppCompatActivity {
         mWeatherMain.setText(weatherMain);
         mWeatherDesc.setText(weatherDesc);
 
+
     }
 }

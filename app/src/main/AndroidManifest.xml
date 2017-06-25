@@ -52,6 +52,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.test.android.hashem.mona.weather.isitsunny.MainActivity" />
         </activity>
+
+        <activity
+            android:name=".SettingsDialogActivity"
+            android:label="Settings"
+            android:theme="@android:style/Theme.Holo.Dialog"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.test.android.hashem.mona.weather.isitsunny.MainActivity" />
+        </activity>
+
     </application>
 
 </manifest>

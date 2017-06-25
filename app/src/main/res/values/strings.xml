@@ -23,6 +23,14 @@
         <item>Friday</item>
 
     </string-array>
+
+    <string-array name="items">
+        <item>C</item>
+        <item>F</item>
+
+
+    </string-array>
+
     <string name="title_activity_location">LocationActivity</string>
     <string name="title_activity_maps">Map</string>
 </resources>

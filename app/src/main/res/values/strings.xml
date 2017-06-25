@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Is it sunny?</string>
+    <string name="location">Change location</string>
+    <string name="settings">Settings</string>
+</resources>

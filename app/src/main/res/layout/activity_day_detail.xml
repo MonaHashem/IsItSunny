@@ -12,12 +12,14 @@
     tools:context="com.test.android.hashem.mona.weather.isitsunny.DayDetail">
 
     <ImageView
+        android:src="@drawable/ic_android_black_24dp"
         android:id="@+id/image"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
         />
     <GridLayout
+        android:paddingTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
@@ -93,7 +95,7 @@
 
             />
         <TextView
-            android:id="@+id/weather"
+            android:id="@+id/weather_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="25sp"
@@ -101,8 +103,26 @@
 
             />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:text="Weather Description:     "
+
+            />
+
+
 
     </GridLayout>
+    <TextView
+        android:layout_marginTop="12dp"
+        android:id="@+id/weather_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text=" 25"
+
+        />
 
 
 </LinearLayout>

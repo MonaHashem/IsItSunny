@@ -13,12 +13,13 @@
     <string name="weather_api">http://api.openweathermap.org/data/2.5/forecast/daily?</string>
     <string name="title_activity_day_detail">DayDetail</string>
     <string-array name="days_of_week">
+        <item>Saturday</item>
+        <item>Sunday</item>
         <item>Monday</item>
         <item>Tuesday</item>
         <item>Wednesday</item>
         <item>Thursday</item>
         <item>Friday</item>
-        <item>Saturday</item>
-        <item>Sunday</item>
+
     </string-array>
 </resources>

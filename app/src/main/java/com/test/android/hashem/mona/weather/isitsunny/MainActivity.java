@@ -1,5 +1,6 @@
 package com.test.android.hashem.mona.weather.isitsunny;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,9 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysAdapterOnClickHandler {
 
@@ -81,11 +85,15 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
 
 
     @Override
-    public void onClick(String weatherForDay) {
+    public void onClick(HashMap<String,String> weatherForDay) {
         //starts dayDetail intent
+        Intent dayDetail = new Intent(this,DayDetail.class);
+        for(HashMap.Entry<String,String> e: weatherForDay.entrySet())
+            dayDetail.putExtra(e.getKey(),e.getValue());
+        startActivity(dayDetail);
     }
 
-    public class WeatherAsyncTask extends AsyncTask<String, Void, String[]> {
+    public class WeatherAsyncTask extends AsyncTask<String, Void, HashMap<String,String>[]> {
 
         @Override
         protected void onPreExecute() {
@@ -94,9 +102,10 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
         }
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected HashMap<String,String>[] doInBackground(String... params) {
 
-            final String result [] = new String [7];
+            final HashMap<String,String> result [] = new HashMap [7];
+
             SharedPreferences sharedPreference = getSharedPreferences(getResources().getString(R.string.shared_preference),MODE_PRIVATE);
             int latDeg =sharedPreference.getInt(getResources().getString(R.string.latitude_degree),0);
             int latMin =sharedPreference.getInt(getResources().getString(R.string.latitude_minute),0);
@@ -131,8 +140,27 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
                             JSONObject temp = day.getJSONObject("temp");
                             int min = (int) Math.round(temp.getDouble("min")) - 273;
                             int max = (int) Math.round(temp.getDouble("min")) - 273;
-                            result[i] = min+"\\"+ max;
+                            int pressure = (int) Math.round(day.getDouble("pressure"));
+                            int humidity = (int) Math.round(day.getDouble("humidity"));
+                            String weatherMain = day.getJSONArray("weather").getJSONObject(0).getString("main");
+                            String weatherDesc = day.getJSONArray("weather").getJSONObject(0).getString("description");
+                            result[i] = new HashMap<String,String>();
+                            result[i].put("min",min+"");
+                            result[i].put("max",max+"");
+                            result[i].put("pressure",pressure+"");
+                            result[i].put("humidity",humidity+"");
+                            result[i].put("weatherMain",weatherMain);
+                            result[i].put("weatherDesc",weatherDesc);
                         }
+                        result[0].put("day","Today");
+                        result[1].put("day","Tomorrow");
+
+                        Calendar calendar = Calendar.getInstance();
+                        int day = calendar.get(Calendar.DAY_OF_WEEK);
+                        String days [] = getResources().getStringArray(R.array.days_of_week);
+                        for(int i = 2; i < 7; i++)
+                            result[i].put("day",days[(i+day)%7]);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
 
@@ -172,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
       }
 
         @Override
-        protected void onPostExecute(String[] weatherData) {
+        protected void onPostExecute(HashMap<String,String>[] weatherData) {
 
             if (weatherData != null) {
 //                showWeatherDataView();

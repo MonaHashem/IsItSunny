@@ -10,16 +10,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DaysAdapterViewHolder> {
 
-    private String [] weatherInfo;
+    private HashMap<String, String >[] weatherInfo;
 
 
     private final DaysAdapterOnClickHandler mClickHandler;
 
 
     public interface DaysAdapterOnClickHandler {
-        void onClick(String weatherForDay);
+        void onClick(HashMap<String,String> weatherForDay);
     }
 
 
@@ -44,7 +46,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DaysAdapterVie
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String weatherForDay = weatherInfo[adapterPosition];
+            HashMap<String,String> weatherForDay = weatherInfo[adapterPosition];
             mClickHandler.onClick(weatherForDay);
         }
     }
@@ -63,8 +65,12 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DaysAdapterVie
 
     @Override
     public void onBindViewHolder(DaysAdapterViewHolder forecastAdapterViewHolder, int position) {
-        String weatherForThisDay = weatherInfo[position];
-        forecastAdapterViewHolder.mWeatherTextView.setText(weatherForThisDay);
+        HashMap<String, String> weatherForThisDay = weatherInfo[position];
+        if (weatherInfo[position] != null) {
+            forecastAdapterViewHolder.mDayNameTextView.setText(weatherForThisDay.get("day"));
+            forecastAdapterViewHolder.mWeatherTextView.setText(weatherForThisDay.get("min") + "/" + weatherForThisDay.get("max"));
+
+        }
     }
 
 
@@ -75,7 +81,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DaysAdapterVie
     }
 
 
-    public void setWeatherData(String[] weatherData) {
+    public void setWeatherData(HashMap<String,String>[] weatherData) {
         weatherInfo = weatherData;
         notifyDataSetChanged();
     }

@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
         int id = item.getItemId();
 
         if (id == R.id.action_location) {
-//           start location intent
+            Intent map = new Intent(this, MapsActivity.class);
+            startActivity(map);
             return true;
         }
 

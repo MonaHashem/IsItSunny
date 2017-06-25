@@ -66,11 +66,24 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DaysAdapterVie
     @Override
     public void onBindViewHolder(DaysAdapterViewHolder forecastAdapterViewHolder, int position) {
         HashMap<String, String> weatherForThisDay = weatherInfo[position];
-        if (weatherInfo[position] != null) {
-            forecastAdapterViewHolder.mDayNameTextView.setText(weatherForThisDay.get("day"));
-            forecastAdapterViewHolder.mWeatherTextView.setText(weatherForThisDay.get("min") + "/" + weatherForThisDay.get("max"));
 
-        }
+        forecastAdapterViewHolder.mDayNameTextView.setText(weatherForThisDay.get("day"));
+        forecastAdapterViewHolder.mWeatherTextView.setText(weatherForThisDay.get("min") + "/" + weatherForThisDay.get("max"));
+        String weather = weatherForThisDay.get("weatherMain");
+
+        if(weather.contains("Clouds"))
+            forecastAdapterViewHolder.mImageView.setImageResource(R.drawable.art_clouds);
+        else if(weather.contains("Rain"))
+            forecastAdapterViewHolder.mImageView.setImageResource(R.drawable.art_rain);
+        else if(weather.contains("Snow"))
+            forecastAdapterViewHolder.mImageView.setImageResource(R.drawable.art_snow);
+        else if(weather.contains("Storm"))
+            forecastAdapterViewHolder.mImageView.setImageResource(R.drawable.art_storm);
+        else if(weather.contains("Fog"))
+            forecastAdapterViewHolder.mImageView.setImageResource(R.drawable.art_fog);
+        else
+            forecastAdapterViewHolder.mImageView.setImageResource(R.drawable.art_clear);
+
     }
 
 

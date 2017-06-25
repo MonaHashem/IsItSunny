@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,12 +41,14 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
     RecyclerView mRecyclerView;
     DaysAdapter daysAdapter;
     RequestQueue requestQueue;
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar2);
         adjustRecyclerView();
         new WeatherAsyncTask().execute();
     }
@@ -122,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
 //                //dialogBox check networkConnection
 //                return null;
 //            }
-
+            final boolean finish[] = new boolean[1];
             String url =getResources().getString(R.string.weather_api);
             url += "lat="+lat+"&lon="+lon+"&cnt=7&appid=" + getResources().getString(R.string.weather_key);
             JsonObjectRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.GET,url,null,new Response.Listener<JSONObject>() {
@@ -132,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
                     //handle response
                     JSONArray list= null;
                     System.err.println("-----------------------hey");
-                    boolean correct = false;
+
                     try {
                         list= response.getJSONArray("list");
 
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
                             JSONObject day = list.getJSONObject(i);
                             JSONObject temp = day.getJSONObject("temp");
                             int min = (int) Math.round(temp.getDouble("min")) - 273;
-                            int max = (int) Math.round(temp.getDouble("min")) - 273;
+                            int max = (int) Math.round(temp.getDouble("max")) - 273;
                             int pressure = (int) Math.round(day.getDouble("pressure"));
                             int humidity = (int) Math.round(day.getDouble("humidity"));
                             String weatherMain = day.getJSONArray("weather").getJSONObject(0).getString("main");
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
                             result[i].put("weatherMain",weatherMain);
                             result[i].put("weatherDesc",weatherDesc);
                         }
+                        System.err.println("------------------------------------I am here");
                         result[0].put("day","Today");
                         result[1].put("day","Tomorrow");
 
@@ -161,10 +165,13 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
                         String days [] = getResources().getStringArray(R.array.days_of_week);
                         for(int i = 2; i < 7; i++)
                             result[i].put("day",days[(i+day)%7]);
+                        finish[0] = true;
+                        System.err.println("------------------------------------I am here2");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
 
+                        finish[0]= true;
                     }
 
 
@@ -192,11 +199,18 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
                             e2.printStackTrace();
                         }
                     }
+                    finish[0]= true;
                 }
 
             });
 
             requestQueue.add(jsonObjectRequest);
+
+            while(!finish[0]){
+
+                for(int i = 0; i < 100; i++);
+                System.out.println("");
+            }
             return result;
       }
 
@@ -204,10 +218,12 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
         protected void onPostExecute(HashMap<String,String>[] weatherData) {
 
             if (weatherData != null) {
-//                showWeatherDataView();
                 daysAdapter.setWeatherData(weatherData);
+                progressBar.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 //show error message
+                System.out.println("--------------------------------Error");
             }
         }
     }

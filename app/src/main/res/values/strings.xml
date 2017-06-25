@@ -2,4 +2,13 @@
     <string name="app_name">Is it sunny?</string>
     <string name="location">Change location</string>
     <string name="settings">Settings</string>
+    <string name="shared_preference">SharedPreference</string>
+    <string name="weather_key">f213206212a6cd464f38eb05ead112b0</string>
+    <string name="longitude_degree">lonDeg</string>
+    <string name="longitude_minute">lonMin</string>
+    <string name="longitude_second">lonSec</string>
+    <string name="latitude_degree">latDeg</string>
+    <string name="latitude_minute">latMin</string>
+    <string name="latitude_second">latSec</string>
+    <string name="weather_api">api.openweathermap.org/data/2.5/forecast/daily?</string>
 </resources>

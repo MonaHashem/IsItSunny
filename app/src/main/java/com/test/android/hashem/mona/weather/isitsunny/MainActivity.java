@@ -14,10 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         adjustRecyclerView();
+        new WeatherAsyncTask().execute();
     }
 
 
@@ -103,20 +107,21 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
 
             double lat = latDeg + (latMin/60.0) + (latSec/3600.0);
             double lon = lonDeg + (lonMin/60.0) + (lonSec/3600.0);
-            if(lat == 0 && lon ==0)
-            {
-                //dialogBox check networkConnection
-                return null;
-            }
+//            if(lat == 0 && lon ==0)
+//            {
+//                //dialogBox check networkConnection
+//                return null;
+//            }
 
             String url =getResources().getString(R.string.weather_api);
-            url += "lat="+lat+"&lon="+lon+"&cnt=7";
-            JsonObjectRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.PUT,url,null,new Response.Listener<JSONObject>() {
+            url += "lat="+lat+"&lon="+lon+"&cnt=7&appid=" + getResources().getString(R.string.weather_key);
+            JsonObjectRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.GET,url,null,new Response.Listener<JSONObject>() {
 
                 @Override
                 public void onResponse(JSONObject response) {
                     //handle response
                     JSONArray list= null;
+                    System.err.println("-----------------------hey");
                     boolean correct = false;
                     try {
                         list= response.getJSONArray("list");
@@ -141,8 +146,25 @@ public class MainActivity extends AppCompatActivity implements DaysAdapter.DaysA
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     // TODO Auto-generated method stub
+                    NetworkResponse response = error.networkResponse;
+                    if (error instanceof ServerError && response != null) {
 
+                        try {
+                            String res = new String(response.data,
+                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                        System.out.println("res " +res);
+                            // Now you can use any deserializer to make sense of data
+                            JSONObject obj = new JSONObject(res);
+                        } catch (UnsupportedEncodingException e1) {
+                            // Couldn't properly decode data to string
+                            e1.printStackTrace();
+                        } catch (JSONException e2) {
+                            // returned data is not JSONObject?
+                            e2.printStackTrace();
+                        }
+                    }
                 }
+
             });
 
             requestQueue.add(jsonObjectRequest);

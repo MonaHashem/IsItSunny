@@ -10,5 +10,5 @@
     <string name="latitude_degree">latDeg</string>
     <string name="latitude_minute">latMin</string>
     <string name="latitude_second">latSec</string>
-    <string name="weather_api">api.openweathermap.org/data/2.5/forecast/daily?</string>
+    <string name="weather_api">http://api.openweathermap.org/data/2.5/forecast/daily?</string>
 </resources>
